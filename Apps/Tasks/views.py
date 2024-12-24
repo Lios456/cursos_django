@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from .models import *
 
 # Create your views here.
@@ -99,9 +99,14 @@ def clases_curso(request, c):
 
 @login_required(login_url='/estudiantes/login_user/')
 def cursos(request):
-    estudiante = Estudiante.objects.get(usuario=request.user)
-    cursos = estudiante.cursos.all()
-    return render(request, 'cursos.html', {'titulo': 'Cursos', 'cursos': cursos})
+    try:
+        estudiante = Estudiante.objects.get(usuario=request.user)
+        cursos = estudiante.cursos.all()
+        return render(request, 'cursos.html', {'titulo': 'Cursos', 'cursos': cursos})
+    except Exception as e:
+        messages.error(request, f"{e}")
+        return redirect('/inicio/')
+    
 
 def ver_curso(request, id):
     curso = Curso.objects.get(id=id)

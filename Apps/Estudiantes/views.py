@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
+from ..Tasks.models import Estudiante
 # Create your views here.
 
 def login_user(request):
@@ -30,15 +31,20 @@ def registro_usuario(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            
             user = form.save()
-            grupo = Group.objects.get(name='Estudiantes')  # Asegúrate de que el grupo 'Estudiantes' exista
+            grupo = Group.objects.get(name='estudiantes')
             user.groups.add(grupo)
-            
-            messages.success(request, "Estudiante registrado exitosamente")
-            messages.info(request, "Por favor inicia sesión y No olvides tu contraseña")
+            estudiante = Estudiante()
+            estudiante.usuario = user
+            estudiante.save()
+            messages.info(request, "Estudiante registrado exitosamente\nPor favor inicia sesión y No olvides tu contraseña")
             return redirect('/estudiantes/login_user/')
-        pass
+        else:
+            messages.error(request, "Error al registrar el usuario")
+            return redirect('/estudiantes/registrar_usuario/')
     else:
         form = UserCreationForm()
         return render(request, 'authenticate/registro.html', {'titulo': 'Registro de Usuario', 'form': form})
+    
+def perfil(request):
+    return render(request, 'perfil.html', {'titulo': 'Perfil de Usuario'})

@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{titulo}}</title>
+
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/iziToast.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/datatables.min.css' %}">
+
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/iziToast.js' %}"></script>
+    <script src="{% static 'js/datatables.min.js' %}"></script>
+    <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'js/additional-methods.min.js' %}"></script>
+
+</head>
+
+<body class="container">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/inicio/">Curso Libre</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Explorar
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/cursos/">Mis Cursos</a></li>
+                                <li><a class="dropdown-item" href="/tareas/">Mis Tareas</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item me-3">
+                                Hola, {{user.username}}
+                            </li>
+                            <li class="nav-item">
+                                <form action="/estudiantes/logout_user/" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger">Cerrar Sesión</button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/estudiantes/login_user/">Iniciar Sesión</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/estudiantes/registrar_usuario/">Registrarse</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {%block body%}
+
+        {%endblock%}
+    </div>
+
+    {% if messages %}
+    
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <script>
+                    iziToast.success({
+                        title: 'Éxito',
+                        message: '{{message}}',
+                        position: 'topRight',
+                    });
+                </script>
+            {% elif message.tags == 'error' %}
+                <script>
+                    iziToast.error({
+                        title: 'Error',
+                        message: '{{message}}',
+                        position: 'topRight',
+                    });
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</body>
+
+</html>

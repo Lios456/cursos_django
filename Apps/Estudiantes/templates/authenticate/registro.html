@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<div class="containter m-5">
+    <div class="container align-items-center w-50">
+        <form method="post" action="/estudiantes/registrar_usuario/">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit" class="btn btn-outline-success">Registrar</button>
+            
+        </form>
+    </div>
+</div>
+
+{% endblock %}

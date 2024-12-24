@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+
+{% block body %}
+
+<h2 class="h2">Estos son tus cursos</h2>
+
+<div class="container row">
+    {% for curso in cursos %}
+        <div class="col-md-4">
+            <center>
+                <h3 class="h3">{{curso.nombre}}</h3>
+                <img src="{{curso.imagen.url}}" alt="{{curso.nombre}}" class="img img-fluid">
+                <p>{{curso.descripcion}}</p>
+                <a href="/tareas/{{curso.id}}" class="btn btn-outline-warning">Ver tareas</a>
+                <a href="/clases/{{curso.id}}" class="btn btn-outline-info">Ver Clases</a>
+            </center>
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

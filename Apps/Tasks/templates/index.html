@@ -1,0 +1,22 @@
+<!-- filepath: /C:/Users/Ferlu/Downloads/DJANGO/Tareas/Apps/Tasks/templates/index.html -->
+{% extends "template.html" %}
+
+{% block body %}
+<div class="container container-fluid">
+    <div class="row">
+        {% for curso in cursos %}
+        <div class="col-md-3 mt-3 mb-3">
+            <div class="card" style=" height: 100%;">
+                <img src="{{ curso.imagen.url }}" class="img-fluid card-img-top" alt="{{ curso.nombre }}">
+                <div class="card-body">
+                    <h2 class="h2 card-title">{{ curso.nombre }}</h2>
+                    <p class="card-text">{{ curso.descripcion|truncatewords:20 }}</p>
+                    <a href="/ver/curso/{{curso.id}}" class="btn btn-primary">Ver más</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

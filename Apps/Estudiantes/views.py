@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from ..Tasks.models import Estudiante
+from ..Tasks.models import Curso
 # Create your views here.
 
 def login_user(request):
@@ -48,3 +49,9 @@ def registro_usuario(request):
     
 def perfil(request):
     return render(request, 'perfil.html', {'titulo': 'Perfil de Usuario'})
+
+def inscribirse(request, id):
+    estudiante = Estudiante.objects.get(usuario=request.user)
+    estudiante.cursos.add(id)
+    messages.success(request, f"Inscripción en {Curso.objects.get(id=id)} exitosa")
+    return redirect('/inicio/')

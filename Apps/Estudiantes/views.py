@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 from ..Tasks.models import Estudiante
 from ..Tasks.models import Curso
 # Create your views here.
@@ -46,10 +47,12 @@ def registro_usuario(request):
     else:
         form = UserCreationForm()
         return render(request, 'authenticate/registro.html', {'titulo': 'Registro de Usuario', 'form': form})
-    
+
+@login_required(login_url='/estudiantes/login_user/')
 def perfil(request):
     return render(request, 'perfil.html', {'titulo': 'Perfil de Usuario'})
 
+@login_required(login_url='/estudiantes/login_user/')
 def inscribirse(request, id):
     estudiante = Estudiante.objects.get(usuario=request.user)
     estudiante.cursos.add(id)

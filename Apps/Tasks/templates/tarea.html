@@ -1,0 +1,31 @@
+{% extends 'template.html' %}
+
+{% block body %}
+
+<div class="container row border-2 border border-info rounded-2 mt-5 p-5">
+    <div class="row text-center mb-5">
+        <h3 class="h3">{{t.titulo}}</h4>
+    </div>
+    <div class="col">
+        <p>{{t.descripcion}}</p>
+        <p>Fecha de inicio: {{t.fecha_inicio}}</p>
+        <p>Fecha de entrega: {{t.fecha_entrega}}</p>
+        {% if archivo %}
+        <a href="{{t.archivo.url}}"></a>
+        {% endif %}
+    </div>
+    <div class="col">
+        {% if t.estado == False %}
+        <p>Estado: Pendiente</p>
+        <form action="/completar_tarea/{{t.id}}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Marcar tarea como hecha" class="btn btn-outline-success">
+        </form>
+        {% else %}
+        <p>Estado: Completo</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -6,7 +6,7 @@
     <div class="row">
         {% for curso in cursos %}
         <div class="col-md-3 mt-3 mb-3">
-            <div class="card" style=" height: 100%;">
+            <div class="card border-0" style=" height: 100%;">
                 <img src="{{ curso.imagen.url }}" class="img-fluid card-img-top" alt="{{ curso.nombre }}">
                 <div class="card-body">
                     <h2 class="h2 card-title">{{ curso.nombre }}</h2>

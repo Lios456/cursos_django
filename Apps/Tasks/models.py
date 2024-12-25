@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.contrib.auth.models import User
 
 # Función para generar la ruta de subida
@@ -10,8 +11,6 @@ def ruta_clases(instance, filename):
 
 def ruta_tareas(instance, filename):
     return f'{instance.curso.nombre}/tareas/{filename}'
-
-# Create your models here.
 
 class Curso(models.Model):
     id = models.AutoField(primary_key=True)
@@ -54,6 +53,7 @@ class Recurso(models.Model):
     
     def __str__(self):
         return f"RECURSO: {self.titulo}"
+
     
 class Tarea(models.Model):
     id = models.AutoField(primary_key=True)

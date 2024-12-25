@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es" data-bs-theme="light">
+<html lang="es" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -43,16 +43,33 @@
                                 aria-expanded="false">
                                 Explorar
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/cursos/">Mis Cursos</a></li>
+                            <ul class="dropdown-menu bg-dark-subtle">
+                                <li><a class="dropdown-item " href="/cursos/">Mis Cursos</a></li>
                                 <li><a class="dropdown-item" href="/tareas/">Mis Tareas</a></li>
+                                <li><a class="dropdown-item" href="/materiales/">Todos los recursos</a></li>
                             </ul>
                         </li>
+                        
+                        {% if user.is_authenticated and user.is_superuser %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Administrar
+                            </a>
+                            <ul class="dropdown-menu bg-dark-subtle">
+                                <li><a class="dropdown-item " href="/administrar/cursos/">Cursos</a></li>
+                                <li><a class="dropdown-item" href="/administrar/tareas/">Tareas</a></li>
+                                <li><a class="dropdown-item" href="/administrar/materiales/">Recursos</a></li>
+                            </ul>
+                        </li>
+                    
+                        {% endif %}
+                            
                     </ul>
                     <ul class="navbar-nav">
                         {% if user.is_authenticated %}
                             <li class="nav-item me-3">
-                                Hola, {{user.username}}
+                                <a href="/estudiantes/ver_perfil" class="btn text-info">Hola, {{user.username}}</a>
                             </li>
                             <li class="nav-item">
                                 <form action="/estudiantes/logout_user/" method="post">

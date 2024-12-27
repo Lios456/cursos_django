@@ -74,7 +74,7 @@ def materiales_curso(request, c):
 
 @login_required(login_url='/estudiantes/login_user/')
 @user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
-def agregar_material(request):
+def administrar_materiales(request):
     if request.method == 'POST':
         try:
             Recurso.objects.create(
@@ -91,7 +91,7 @@ def agregar_material(request):
     else:
         cursos = Curso.objects.all()
         materiales = Recurso.objects.all()
-        return render(request, 'agregar_material.html', 
+        return render(request, 'administrar_material.html', 
                       {'titulo': 'Administración de materiales', 
                        'cursos': cursos,
                        'materiales': materiales})
@@ -163,5 +163,28 @@ def agregar_curso(request):
 def ver_curso(request, id):
     curso = Curso.objects.get(id=id)
     return render(request, 'ver_curso.html', {'titulo': 'Curso', 'curso': curso})
+
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def administrar_cursos(request):
+    if request.method == 'POST':
+        try:
+            Curso.objects.create(
+                nombre=request.POST['tx_nombre'],
+                imagen=request.FILES.get('tx_imagen'), 
+                descripcion=request.POST['tx_descripcion'],
+                f_inicio=request.POST['tx_f_inicio'],
+                f_fin=request.POST['tx_f_fin']
+            )
+            messages.success(request, 'Curso agregado correctamente')
+        except Exception as e:
+            messages.error(request, f"Hubo un error al agregar el Curso, Intentalo de nuevo\n{e}")
+        return render(request, 'administrar_curso.html', 
+                      {'titulo': 'Administración de cursos',
+                       'cursos': Curso.objects.all()})
+    else:
+        return render(request, 'administrar_curso.html', 
+                      {'titulo': 'Administración de cursos',
+                       'cursos': Curso.objects.all()})
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

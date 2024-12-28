@@ -4,32 +4,49 @@
 <h1 class="h1">Administrar Curso</h1>
 <div class="container d-flex justify-content-center m-5">
     <div class="container w-50">
-        <form method="post" enctype="multipart/form-data" id="form_curso">
+        <form method="post" enctype="multipart/form-data" id="form_curso" >
             {% csrf_token %}
             
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="tx_nombre" name="tx_nombre" maxlength="100" placeholder="Ingrese el nombre del curso" required>
+                <input type="text" class="form-control" id="tx_nombre" name="tx_nombre" maxlength="100" placeholder="Ingrese el nombre del curso" required
+                
+                {% if c %}
+                    value="{{ c.nombre }}"
+                {% endif %}
+                    >
             </div>
 
             <div class="mb-3">
                 <label for="imagen" class="form-label">Imagen</label>
-                <input type="file" class="form-control" id="tx_imagen" name="tx_imagen">
+                <input type="file" class="form-control" id="tx_imagen" name="tx_imagen"
+                {% if c %}
+                    value="{{ c.imagen.url }}"
+                {% endif %}
+                    >
             </div>
 
             <div class="mb-3">
                 <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa el curso" required></textarea>
+                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa el curso" required>{% if c %}{{ c.descripcion }}{% endif %}</textarea>
             </div>
 
             <div class="mb-3">
                 <label for="f_inicio" class="form-label">Fecha de Inicio</label>
-                <input type="date" class="form-control" id="tx_f_inicio" name="tx_f_inicio" required>
+                <input type="date" class="form-control" id="tx_f_inicio" name="tx_f_inicio" required
+                {% if c %}
+                    value="{{ c.f_inicio|date:'Y-m-d' }}"
+                {% endif %}
+                    >
             </div>
 
             <div class="mb-3">
                 <label for="f_fin" class="form-label">Fecha de Fin</label>
-                <input type="date" class="form-control" id="tx_f_fin" name="tx_f_fin" required>
+                <input type="date" class="form-control" id="tx_f_fin" name="tx_f_fin" required
+                {% if c %}
+                    value="{{ c.f_fin|date:'Y-m-d' }}"
+                {% endif %}
+                    >
             </div>
 
             <div class="mb-3 row justify-content-center">
@@ -53,15 +70,15 @@
         <tbody>
             {% for curso in cursos %}
             <tr>
-                <td><img src="{{ curso.imagen.url }}" alt="" class="img img-fluid"></td>
+                <td><img src="{{ curso.imagen.url }}" alt="" class="img img-fluid w-50"></td>
                 <td>{{ curso.nombre }}</td>
                 <td>{{ curso.descripcion }}</td>
                 <td>{{ curso.f_inicio }}</td>
                 <td>{{ curso.f_fin }}</td>
                 <td>
-                    <div class="row">
-                        <a href="/administrar/cursos/editar/{{ curso.id }}" class="btn btn-warning">Editar</a>
-                        <a href="/administrar/cursos/eliminar/{{ curso.id }}" onclick="return confirm('Seguro quieres eliminar: {{curso.nombre}}')" class="btn btn-danger">Eliminar</a>
+                    <div class="d-flex col">
+                        <a href="/administrar/cursos/editar/{{ curso.id }}" class="btn btn-warning m-1">Editar</a>
+                        <a href="/administrar/cursos/eliminar/{{ curso.id }}" onclick="return confirm('Seguro quieres eliminar: {{curso.nombre}}')" class="btn btn-danger m-1">Eliminar</a>
                     </div>
                 </td>
             </tr>

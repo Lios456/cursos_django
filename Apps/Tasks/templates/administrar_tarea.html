@@ -9,22 +9,22 @@
             
             <div class="mb-3">
                 <label for="tx_titulo" class="form-label">Título</label>
-                <input type="text" class="form-control" id="tx_titulo" name="tx_titulo" maxlength="100" placeholder="Ingrese el título de la tarea" required>
+                <input {% if t %} value="{{ t.titulo }}"{% endif %} type="text" class="form-control" id="tx_titulo" name="tx_titulo" maxlength="100" placeholder="Ingrese el título de la tarea" required>
             </div>
 
             <div class="mb-3">
                 <label for="tx_descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa la tarea" required></textarea>
+                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa la tarea" required>{% if t %}{{ t.descripcion }}{% endif %}</textarea>
             </div>
 
             <div class="mb-3">
                 <label for="tx_f_inicio" class="form-label">Fecha de Inicio</label>
-                <input type="date" class="form-control" id="tx_f_inicio" name="tx_f_inicio" placeholder="">
+                <input type="date" class="form-control" id="tx_f_inicio" name="tx_f_inicio" {% if t %} value="{{ t.fecha_inicio|date:'Y-m-d' }}"{% endif %} >
             </div>
 
             <div class="mb-3">
                 <label for="tx_f_entrega" class="form-label">Fecha de Entrega</label>
-                <input type="date" class="form-control" id="tx_f_entrega" name="tx_f_entrega" placeholder="">
+                <input type="date" class="form-control" id="tx_f_entrega" name="tx_f_entrega" {% if t %} value="{{ t.fecha_entrega|date:'Y-m-d' }}"{% endif %} >
             </div>
 
             <div class="mb-3">
@@ -32,7 +32,7 @@
                 <select class="form-select" id="tx_curso" name="tx_curso" required>
                     <option value="" selected="selected">-- Seleccione un curso --</option>
                     {% for curso in cursos %}
-                        <option value="{{ curso.id }}">{{ curso.nombre }}</option>
+                        <option value="{{ curso.id }}" {% if curso == t.curso %}selected="selected"{% endif %} >{{ curso.nombre }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -58,7 +58,6 @@
                 <th scope="col">Fecha de Inicio</th>
                 <th scope="col">Curso</th>
                 <th scope="col">Archivo</th>
-                <th scope="col">Estado</th>
                 <th scope="col">Fecha de Entrega</th>
                 <th scope="col">Acciones</th>
             </tr>
@@ -77,24 +76,15 @@
                             No disponible
                         {% endif %}
                     </td>
-                    
-                    {% if t.estado == True %}
-                        <td>Activo</td>
-                    {% else %}
-                        <td>Oculto</td>
-                    {% endif %}
                     <td>{{ t.fecha_entrega }}</td>
 
                     <td>
                         <div class="d-flex col">
-                            <a href="/administrar/tareas/editar/{{t.id}}" class="btn btn-warning">Editar</a>
-                        <a href="/administrar/tareas/eliminar/{{t.id}}" class="btn btn-danger" onclick="return confirm('Seguro quieres eliminar: {{t.titulo}}')">Eliminar</a>
-                        
-                        {% if t.estado == True %}
-                            <a href="/administrar/tareas/ocultar/{{t.id}}" class="btn btn-danger">Ocultar</a>
-                        {% else %}
-                            <a href="/administrar/tareas/mostrar/{{t.id}}" class="btn btn-success">Mostrar</a>
-                        {% endif %}
+                            <a class="btn btn-warning m-1" href="/administrar/tareas/editar/{{t.id}}">Editar</a>
+                            <form action="/administrar/tareas/eliminar/{{t.id}}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger m-1" onclick="return confirm('Seguro quieres eliminar: {{t.titulo}}')">Eliminar</button>
+                            </form>
                         </div>
                             
                     </td>

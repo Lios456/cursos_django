@@ -2,14 +2,14 @@
 
 {% block body %}
 
-<div class="container row border-2 border border-info rounded-2 mt-5 p-5">
+<div class="container row mt-1 p-5">
     <div class="row text-center mb-5">
         <h3 class="h3">{{t.titulo}}</h4>
     </div>
     <div class="col">
         <p>{{t.descripcion}}</p>
-        <p>Fecha de inicio: {{t.fecha_inicio}}</p>
-        <p>Fecha de entrega: {{t.fecha_entrega}}</p>
+        <p><b>Fecha de inicio:</b> {{t.fecha_inicio}}</p>
+        <p><b>Fecha de entrega:</b> {{t.fecha_entrega}}</p>
         {% if archivo %}
         <a href="{{t.archivo.url}}"></a>
         {% endif %}
@@ -26,6 +26,35 @@
         {% endif %}
     </div>
 
+</div>
+
+<div class="container p-5">
+    <center><h2 class="h2">Comentarios</h2></center>
+    
+    {% for c in comentarios %}
+        <div class="card mb-3 w-50" >
+            <div class="card-body">
+              <h5 class="card-title">{{c.estudiante}} dice:</h5>
+              <p class="card-text">{{c.contenido}}</p>
+            </div>
+            <div class="card-footer">
+                {{c.fecha}}
+            </div>
+          </div>
+    {% endfor %}
+
+    <form action="/estudiantes/comentar/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="tx_tarea" value="{{t.id}}">
+        <div class="mb-3">
+            <label for="contenido" class="form-label">Comentario</label>
+            <textarea class="form-control" id="tx_contenido" name="tx_contenido" rows="3"></textarea>
+        </div>
+        <div class="mb-3 row justify-content-center">
+            <button type="submit" class="btn btn-success w-50">Comentar</button>
+        </div>
+    </form>
+        
 </div>
 
 {% endblock %}

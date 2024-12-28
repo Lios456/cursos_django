@@ -59,7 +59,7 @@
                             <ul class="dropdown-menu bg-dark-subtle">
                                 <li><a class="dropdown-item " href="/administrar/cursos/">Cursos</a></li>
                                 <li><a class="dropdown-item" href="/administrar/tareas/">Tareas</a></li>
-                                <li><a class="dropdown-item" href="/administrar/materiales/">Recursos</a></li>
+                                <li><a class="dropdown-item" href="/administrar/materiales/">Materiales</a></li>
                             </ul>
                         </li>
                     
@@ -113,6 +113,14 @@
                         position: 'topRight',
                     });
                 </script>
+            {% elif message.tags == 'warning' %}
+            <script>
+                iziToast.warning({
+                    title: 'Información',
+                    message: '{{message}}',
+                    position: 'topRight',
+                });
+            </script>
             {% endif %}
         {% endfor %}
     {% endif %}

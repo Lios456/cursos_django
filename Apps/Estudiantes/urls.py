@@ -8,5 +8,6 @@ urlpatterns = [
     path('registrar_usuario/', views.registro_usuario),
     path('ver_perfil/', views.perfil),
     path('inscribirse/<int:id>/', views.inscribirse),
+    path('comentar/', views.comentar)
     
 ]

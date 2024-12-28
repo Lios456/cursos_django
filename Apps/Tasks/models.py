@@ -29,7 +29,7 @@ class Estudiante(models.Model):
     cursos = models.ManyToManyField(Curso)
     
     def __str__(self):
-        return f"ESTUDIANTE: {self.usuario.username}"
+        return f"Estudiante {self.usuario.username}"
     
 class Clase(models.Model):
     id = models.AutoField(primary_key=True)

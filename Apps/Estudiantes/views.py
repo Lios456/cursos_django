@@ -4,8 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from ..Tasks.models import Estudiante
-from ..Tasks.models import Curso
+from ..Tasks.models import *
 # Create your views here.
 
 def login_user(request):
@@ -58,3 +57,14 @@ def inscribirse(request, id):
     estudiante.cursos.add(id)
     messages.success(request, f"Inscripción en {Curso.objects.get(id=id)} exitosa")
     return redirect('/inicio/')
+
+@login_required(login_url='/estudiantes/login_user/')
+def comentar(request):
+    if request.method == "POST":
+        Comentario.objects.create(
+            tarea = Tarea.objects.get(id=request.POST.get('tx_tarea')),
+            estudiante=Estudiante.objects.get(usuario=request.user),
+            contenido=request.POST.get('tx_contenido')
+        )
+        messages.success(request, "Comentario enviado exitosamente")
+    return redirect(f'/tarea/{request.POST.get("tx_tarea")}')

@@ -47,6 +47,42 @@ def completar_tarea(request, id):
     else:
         return redirect('/tareas/')
     
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def administrar_tareas(request):
+    if request.method == 'POST':
+        try:
+            Tarea.objects.create(
+                titulo=request.POST['tx_titulo'],
+                descripcion=request.POST['tx_descripcion'], 
+                fecha_entrega=request.POST['tx_f_entrega'],
+                curso=request.POST['tx_curso'],
+                archivo=request.FILES.get('tx_archivo'),
+                fecha_inicio = request.POST['tx_f_inicio']
+            )
+            messages.success(request, 'Tarea agregada correctamente')
+        except Exception as e:
+            messages.error(request, f"Hubo un error al agregar la Tarea, Intentalo de nuevo\n{e}")
+        return render(request, 'administrar_tarea.html', 
+                      {'titulo': 'Administración de tareas',
+                       'tareas': Tarea.objects.all(),
+                       'cursos': Curso.objects.all()})
+    else:
+        return render(request, 'administrar_tarea.html', 
+                      {'titulo': 'Administración de tareas',
+                       'tareas': Tarea.objects.all(),
+                       'cursos': Curso.objects.all()})
+    
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')   
+def eliminar_tarea(request, id):
+    try:
+        Tarea.objects.get(id=id).delete()
+        messages.success(request, 'Tarea eliminada')
+    except Exception as e:
+        messages.error(request, f"Hubo un error al eliminar la tarea, Intentalo de nuevo\n{e}")
+    return redirect('/administrar/tareas/')
+    
 
 """
 
@@ -95,6 +131,16 @@ def administrar_materiales(request):
                       {'titulo': 'Administración de materiales', 
                        'cursos': cursos,
                        'materiales': materiales})
+    
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')   
+def eliminar_material(request, id):
+    try:
+        Recurso.objects.get(id=id).delete()
+        messages.success(request, 'Material eliminado')
+    except Exception as e:
+        messages.error(request, f"Hubo un error al eliminar el Material, Intentalo de nuevo\n{e}")
+    return redirect('/administrar/materiales/')
 
 """
    ____ _                     
@@ -171,7 +217,7 @@ def administrar_cursos(request):
         try:
             Curso.objects.create(
                 nombre=request.POST['tx_nombre'],
-                imagen=request.FILES.get('tx_imagen'), 
+                imagen=request.FILES.get('tx_imagen') if request.FILES.get('tx_imagen') else 'cursos/default.png', 
                 descripcion=request.POST['tx_descripcion'],
                 f_inicio=request.POST['tx_f_inicio'],
                 f_fin=request.POST['tx_f_fin']
@@ -187,4 +233,13 @@ def administrar_cursos(request):
                       {'titulo': 'Administración de cursos',
                        'cursos': Curso.objects.all()})
 
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')   
+def eliminar_curso(request, id):
+    try:
+        Curso.objects.get(id=id).delete()
+        messages.success(request, 'Curso eliminado')
+    except Exception as e:
+        messages.error(request, f"Hubo un error al eliminar el Curso, Intentalo de nuevo\n{e}")
+    return redirect('/administrar/cursos/')
+

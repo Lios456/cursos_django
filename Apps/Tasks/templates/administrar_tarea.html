@@ -1,0 +1,171 @@
+{% extends 'template.html' %}
+
+{% block body %}
+<h1 class="h1">{{titulo}}</h1>
+<div class="container d-flex justify-content-center m-5">
+    <div class="container w-50">
+        <form method="post" enctype="multipart/form-data" id="form_tarea">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="tx_titulo" class="form-label">Título</label>
+                <input type="text" class="form-control" id="tx_titulo" name="tx_titulo" maxlength="100" placeholder="Ingrese el título de la tarea" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="tx_descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa la tarea" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="tx_f_inicio" class="form-label">Fecha de Inicio</label>
+                <input type="date" class="form-control" id="tx_f_inicio" name="tx_f_inicio" placeholder="">
+            </div>
+
+            <div class="mb-3">
+                <label for="tx_f_entrega" class="form-label">Fecha de Entrega</label>
+                <input type="date" class="form-control" id="tx_f_entrega" name="tx_f_entrega" placeholder="">
+            </div>
+
+            <div class="mb-3">
+                <label for="tx_curso" class="form-label">Curso</label>
+                <select class="form-select" id="tx_curso" name="tx_curso" required>
+                    <option value="" selected="selected">-- Seleccione un curso --</option>
+                    {% for curso in cursos %}
+                        <option value="{{ curso.id }}">{{ curso.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="tx_archivo" class="form-label">Archivo</label>
+                <input type="file" class="form-control" id="tx_archivo" name="tx_archivo">
+            </div>
+
+            <div class="mb-3 row justify-content-center">
+                <button type="submit" class="btn btn-success w-50">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="container m-5">
+    <h2 class="h2">Estos son las tareas listadas</h2>
+    <table class="table table-striped tabla_jquery">
+        <thead>
+            <tr>
+                <th scope="col">Título</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Fecha de Inicio</th>
+                <th scope="col">Curso</th>
+                <th scope="col">Archivo</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Fecha de Entrega</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tareas %}
+                <tr>
+                    <td>{{ t.titulo }}</td>
+                    <td>{{ t.descripcion }}</td>
+                    <td>{{ t.fecha_inicio }}</td>
+                    <td>{{ t.curso }}</td>
+                    <td>
+                        {% if t.archivo %}
+                            <a href="{{ t.archivo.url }}" target="_blank">Ver</a>
+                        {%else%}
+                            No disponible
+                        {% endif %}
+                    </td>
+                    
+                    {% if t.estado == True %}
+                        <td>Activo</td>
+                    {% else %}
+                        <td>Oculto</td>
+                    {% endif %}
+                    <td>{{ t.fecha_entrega }}</td>
+
+                    <td>
+                        <div class="d-flex col">
+                            <a href="/administrar/tareas/editar/{{t.id}}" class="btn btn-warning">Editar</a>
+                        <a href="/administrar/tareas/eliminar/{{t.id}}" class="btn btn-danger" onclick="return confirm('Seguro quieres eliminar: {{t.titulo}}')">Eliminar</a>
+                        
+                        {% if t.estado == True %}
+                            <a href="/administrar/tareas/ocultar/{{t.id}}" class="btn btn-danger">Ocultar</a>
+                        {% else %}
+                            <a href="/administrar/tareas/mostrar/{{t.id}}" class="btn btn-success">Mostrar</a>
+                        {% endif %}
+                        </div>
+                            
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#form_tarea").validate({
+            rules: {
+                tx_titulo: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 100
+                },
+                tx_descripcion: {
+                    required: true,
+                    minlength: 10
+                },
+                tx_curso: {
+                    required: true
+                },
+                tx_f_inicio:{
+                    required: true
+                },
+                tx_f_entrega: {
+                required: true,
+                date: true,
+                dateGreaterThan: "#tx_f_inicio"
+            }
+            },
+            messages: {
+                tx_titulo: {
+                    required: "Por favor ingrese el título del recurso",
+                    maxlength: "El título no puede tener más de 100 caracteres",
+                    minlength: "El título debe tener al menos 10 caracteres"
+                },
+                tx_descripcion: {
+                    required: "Por favor describa el recurso",
+                    minlength: "La descripción debe tener al menos 10 caracteres"
+                },
+                tx_curso: {
+                    required: "Por favor seleccione un curso"
+                },
+                tx_link:{
+                    url: "Por favor ingrese un enlace válido"
+                },
+                tx_f_inicio:{
+                    required: "Por favor seleccione la fecha de Inicio"
+                },
+                tx_f_entrega: {
+                required: "Por favor seleccione la fecha de entrega",
+                date: "Ingresa una fecha válida",
+                dateGreaterThan: "La fecha de entrega debe ser posterior a la fecha de inicio"
+            }
+                
+            },
+            errorElement: "div",
+            errorPlacement: function(error, element) {
+                error.addClass("invalid-feedback");
+                element.closest(".mb-3").append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).addClass("is-valid").removeClass("is-invalid");
+            }
+            });
+    });
+    </script>
+{% endblock %}

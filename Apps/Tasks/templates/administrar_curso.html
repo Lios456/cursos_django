@@ -9,17 +9,17 @@
             
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" name="tx_nombre" maxlength="100" placeholder="Ingrese el nombre del curso" required>
+                <input type="text" class="form-control" id="tx_nombre" name="tx_nombre" maxlength="100" placeholder="Ingrese el nombre del curso" required>
             </div>
 
             <div class="mb-3">
                 <label for="imagen" class="form-label">Imagen</label>
-                <input type="file" class="form-control" id="imagen" name="tx_imagen">
+                <input type="file" class="form-control" id="tx_imagen" name="tx_imagen">
             </div>
 
             <div class="mb-3">
                 <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcion" name="tx_descripcion" rows="4" placeholder="Describa el curso" required></textarea>
+                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa el curso" required></textarea>
             </div>
 
             <div class="mb-3">
@@ -32,14 +32,17 @@
                 <input type="date" class="form-control" id="tx_f_fin" name="tx_f_fin" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <div class="mb-3 row justify-content-center">
+                <button type="submit" class="btn btn-success w-50">Guardar</button>
+            </div>
         </form>
     </div>
 </div>
 <div class="container">
-    <table class="table table-stripped" id="tabla_cursos">
+    <table class="table table-stripped tabla_jquery" id="tabla_cursos">
         <thead>
             <tr>
+                <th></th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Fecha de Inicio</th>
@@ -50,14 +53,15 @@
         <tbody>
             {% for curso in cursos %}
             <tr>
+                <td><img src="{{ curso.imagen.url }}" alt="" class="img img-fluid"></td>
                 <td>{{ curso.nombre }}</td>
                 <td>{{ curso.descripcion }}</td>
                 <td>{{ curso.f_inicio }}</td>
                 <td>{{ curso.f_fin }}</td>
                 <td>
                     <div class="row">
-                        <a href="/administrar/curso/{{ curso.id }}/editar" class="btn btn-warning">Editar</a>
-                        <a href="/administrar/curso/{{ curso.id }}/eliminar" class="btn btn-danger">Eliminar</a>
+                        <a href="/administrar/cursos/editar/{{ curso.id }}" class="btn btn-warning">Editar</a>
+                        <a href="/administrar/cursos/eliminar/{{ curso.id }}" onclick="return confirm('Seguro quieres eliminar: {{curso.nombre}}')" class="btn btn-danger">Eliminar</a>
                     </div>
                 </td>
             </tr>
@@ -67,62 +71,45 @@
 </div>
 <script>
 $(document).ready(function() {
-    new DataTable("#tabla_cursos", {
-        searchable: true,
-        sortable: true
-    });
-
-    $.validator.addMethod("fileType", function(value, element) {
-        if(element.files.length === 0) return true; // Optional file
-        const acceptableTypes = ["image/jpeg", "image/png", "image/gif"];
-        return acceptableTypes.includes(element.files[0].type);
-    }, "Por favor, seleccione un archivo de imagen válido (JPEG, PNG, GIF)");
-
-    $.validator.addMethod("dateGreaterThan", function(value, element, param) {
-        const startDate = $(param).val();
-        if (!startDate || !value) return true;
-        return new Date(value) > new Date(startDate);
-    }, "La fecha de fin debe ser posterior a la fecha de inicio");
-
     $("#form_curso").validate({
         rules: {
-            nombre: {
+            tx_nombre: {
                 required: true,
                 minlength: 3,
                 maxlength: 100
             },
-            imagen: {
+            tx_imagen: {
                 fileType: true
             },
-            descripcion: {
+            tx_descripcion: {
                 required: true,
                 minlength: 10
             },
-            f_inicio: {
+            tx_f_inicio: {
                 required: true,
                 date: true
             },
-            f_fin: {
+            tx_f_fin: {
                 required: true,
                 date: true,
-                dateGreaterThan: "#f_inicio"
+                dateGreaterThan: "#tx_f_inicio"
             }
         },
         messages: {
-            nombre: {
+            tx_nombre: {
                 required: "Por favor, ingrese el nombre del curso",
                 minlength: "El nombre debe tener al menos 3 caracteres",
                 maxlength: "El nombre no puede exceder los 100 caracteres"
             },
-            descripcion: {
+            tx_descripcion: {
                 required: "Por favor, ingrese una descripción del curso",
                 minlength: "La descripción debe tener al menos 10 caracteres"
             },
-            f_inicio: {
+            tx_f_inicio: {
                 required: "Por favor, seleccione la fecha de inicio",
                 date: "Por favor, ingrese una fecha válida"
             },
-            f_fin: {
+            tx_f_fin: {
                 required: "Por favor, seleccione la fecha de fin",
                 date: "Por favor, ingrese una fecha válida"
             }
@@ -139,10 +126,6 @@ $(document).ready(function() {
             $(element).removeClass('is-invalid');
             $(element).addClass('is-valid');
         },
-        submitHandler: function(form) {
-            // Handle form submission here
-            form.submit();
-        }
     });
 });
 </script>

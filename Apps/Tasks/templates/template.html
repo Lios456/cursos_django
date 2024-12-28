@@ -118,4 +118,25 @@
     {% endif %}
 </body>
 
+<script>
+    $(document).ready(function() {
+        new DataTable(".tabla_jquery", {
+            searchable: true,
+            sortable: true
+        });
+    
+        $.validator.addMethod("fileType", function(value, element) {
+            if(element.files.length === 0) return true;
+            const acceptableTypes = ["image/jpeg", "image/png", "image/gif"];
+            return acceptableTypes.includes(element.files[0].type);
+        }, "Por favor, seleccione un archivo de imagen válido (JPEG, PNG, GIF)");
+    
+        $.validator.addMethod("dateGreaterThan", function(value, element, param) {
+            const startDate = $(param).val();
+            if (!startDate || !value) return true;
+            return new Date(value) > new Date(startDate);
+        }, "La fecha de fin debe ser posterior a la fecha de inicio");
+    });
+    </script>
+
 </html>

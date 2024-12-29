@@ -231,6 +231,62 @@ def clases_curso(request, c):
     clases = Clase.objects.filter(curso__in=cursos, curso=c)
     return render(request, 'clases_curso.html', {'titulo': 'Clases', 'clases': clases})
 
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def administrar_clases(request):
+    if request.method == 'POST':
+        try:
+            Clase.objects.create(
+                nombre=request.POST['tx_nombre'],
+                descripcion=request.POST['tx_descripcion'],
+                curso=Curso.objects.get(id=request.POST['tx_curso']),
+                contenido=request.FILES.get('tx_contenido'),
+                link=request.POST['tx_link']
+            )
+            messages.success(request, 'Clase agregada')
+        except Exception as e:
+            messages.error(request, f"Hubo un error al agregar la clase, Intentalo de nuevo {e}")
+        return redirect('/administrar/clases/')
+    else:
+        return render(request, 'administrar_clases.html', {'titulo': 'Administración de clases', 
+                                                           'cursos': Curso.objects.all(), 
+                                                           'clases': Clase.objects.all()})
+
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def eliminar_clase(request, id):
+    try:
+        Clase.objects.get(id=id).delete()
+        messages.success(request, 'Clase eliminada')
+    except Exception as e:
+        messages.error(request, f"Hubo un error al eliminar la Clase, Intentalo de nuevo: {e}")
+    return redirect('/administrar/clases/')
+
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def editar_clase(request, id):
+    clase = Clase.objects.get(id=id)
+    if request.method == 'POST':
+        try:
+            clase.nombre = request.POST['tx_nombre']
+            clase.descripcion = request.POST['tx_descripcion']
+            clase.curso = Curso.objects.get(id=request.POST['tx_curso'])
+            clase.contenido = request.FILES.get('tx_contenido') if request.FILES.get('tx_contenido') else clase.contenido
+            clase.link = request.POST['tx_link']
+            clase.save()
+            messages.success(request, 'Clase actualizada')
+        except Exception as e:
+            messages.error(request, f"Hubo un error al editar la Clase, Intentalo de nuevo: {e}")
+        return redirect('/administrar/clases/')
+    else:
+        return render(request, 'administrar_clases.html', 
+                      {'titulo': 'Editar clase',
+                       'cursos': Curso.objects.all(),
+                       'clases': Clase.objects.all(),
+                       'c': clase
+                       })
+
+
 """
 
    ____                         

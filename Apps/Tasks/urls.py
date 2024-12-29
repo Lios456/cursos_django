@@ -21,6 +21,9 @@ urlpatterns = [
     path('administrar/tareas/editar/<int:id>', views.editar_tarea),
 
     path('clases/<str:c>/', views.clases_curso),
+    path('administrar/clases/', views.administrar_clases),
+    path('administrar/clases/eliminar/<int:id>', views.eliminar_clase),
+    path('administrar/clases/editar/<int:id>', views.editar_clase),
 
     path('materiales/<str:c>/', views.materiales_curso),
     path('materiales/', views.materiales),

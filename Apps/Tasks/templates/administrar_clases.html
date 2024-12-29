@@ -1,0 +1,86 @@
+{% extends 'template.html' %}
+
+{% block body %}
+
+<div class="container-sm w-50">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="tx_nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="tx_nombre" name="tx_nombre" value="{{c.nombre}}">
+        </div>
+        <div class="mb-3">
+            <label for="tx_descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="3">{{c.descripcion}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="tx_curso" class="form-label">Curso</label>
+            <select name="tx_curso" id="tx_curso" class="form-control">
+                {% for curso in cursos %}
+                <option value="{{curso.id}}" {% if curso == c.curso %} selected = "selected"{% endif %}>{{curso.nombre}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="tx_contenido" class="form-label">Archivos</label>
+            <input type="file" class="form-control" id="tx_contenido" name="tx_contenido">
+        </div>
+        <div class="mb-3">
+            <label for="tx_link" class="form-label">Link</label>
+            <input type="url" class="form-control" id="tx_link" name="tx_link" value="{{c.link}}">
+        </div>
+        <div class="row justify-content-center">
+            <button type="submit" class="btn btn-success w-50">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container table-responsive">
+    <table class="table tabla_jquery">
+        <thead>
+            <tr>
+                <td>Nombre</td>
+                <td>Descripción</td>
+                <td>Curso</td>
+                <td>contenido</td>
+                <td>Links</td>
+                <td>Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clase in clases %}
+            <tr>
+                <td>{{clase.nombre}}</td>
+                <td>{{clase.descripcion}}</td>
+                <td>{{clase.curso.nombre}}</td>
+                <td>
+                {% if clase.contenido %}
+                    <a href="{{clase.contenido.url}}">Descargar</a>
+                {% else %}
+                    No hay contenido
+                {% endif %}
+                    </td>
+                <td>
+                    {% if clase.link %}
+                    <a href="{{clase.link}}">Ver</a>
+                    {% else %}
+                    No hay link
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="col d-flex">
+                        <a href="/administrar/clases/editar/{{clase.id}}" class="btn btn-warning m-1">Editar</a>
+                        <form action="/administrar/clases/eliminar/{{clase.id}}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger m-1"
+                            onclick="return confirm('¿Está seguro que desea eliminar la clase: {{clase.nombre}}');"
+                            >Eliminar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

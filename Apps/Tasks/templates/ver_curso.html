@@ -4,10 +4,10 @@
 
 <div class="container d-flex justify-content-center mt-4">
     {% if curso %}
-    <div class="container w-50 border border-3 border-dark p-4 rounded-3">
+    <div class="container-sm p-4">
         <h1 class="mb-4">{{ curso.nombre }}</h1>
         <div class="d-flex justify-content-center">
-            <img src="{{ curso.imagen.url }}" class="img-fluid" alt="{{ curso.nombre }}">
+            <img src="{{ curso.imagen.url }}" class="img-fluid w-50" alt="{{ curso.nombre }}">
         </div>
         <p class="mt-4">{{ curso.descripcion }}</p>
         <p class="mt-4">Duración: {{curso.f_inicio}} - {{ curso.f_fin }} </p>

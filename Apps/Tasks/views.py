@@ -180,6 +180,30 @@ def eliminar_material(request, id):
         messages.error(request, f"Hubo un error al eliminar el Material, Intentalo de nuevo\n{e}")
     return redirect('/administrar/materiales/')
 
+@login_required(login_url='/estudiantes/login_user/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/estudiantes/login_user/')
+def editar_material(request, id):
+    material = Recurso.objects.get(id=id)
+    if request.method == 'POST':
+        try:
+            material.titulo = request.POST['tx_titulo']
+            material.descripcion = request.POST['tx_descripcion']
+            material.curso = Curso.objects.get(id=request.POST['tx_curso'])
+            material.link = request.POST['tx_link']
+            material.archivos = request.FILES.get('tx_archivos') if request.FILES.get('tx_archivos') else material.archivos
+            material.save()
+            messages.success(request, 'Material actualizado')
+        except Exception as e:
+            messages.error(request, f"Hubo un error al editar el Material, Intentalo de nuevo <br> {e}")
+        return redirect('/administrar/materiales/')
+    else:
+        return render(request, 'administrar_material.html', 
+                      {'titulo': 'Editar material',
+                       'cursos': Curso.objects.all(),
+                       'materiales': Recurso.objects.all(),
+                       'm': material
+                       })
+
 """
    ____ _                     
   / ___| | __ _ ___  ___  ___ 

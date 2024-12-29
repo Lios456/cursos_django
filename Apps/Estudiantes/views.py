@@ -41,7 +41,10 @@ def registro_usuario(request):
             messages.info(request, "Estudiante registrado exitosamente\nPor favor inicia sesión y No olvides tu contraseña")
             return redirect('/estudiantes/login_user/')
         else:
-            messages.error(request, "Error al registrar el usuario")
+            usuario = User.objects.filter(username=request.POST.get('username'))
+            if usuario:
+                messages.error(request, "El usuario ya existe, por favor intenta con otro")
+            messages.error(request, "Error al registrar el usuario, por favor verifica los datos e intentalo de nuevo")
             return redirect('/estudiantes/registrar_usuario/')
     else:
         form = UserCreationForm()

@@ -21,11 +21,11 @@ urlpatterns = [
     path('administrar/tareas/editar/<int:id>', views.editar_tarea),
 
     path('clases/<str:c>/', views.clases_curso),
-    
+
     path('materiales/<str:c>/', views.materiales_curso),
     path('materiales/', views.materiales),
     path('administrar/materiales/', views.administrar_materiales),
     path('administrar/materiales/eliminar/<int:id>', views.eliminar_material),
-    #path('administrar/materiales/editar/<int:id>', views.editar_material),
+    path('administrar/materiales/editar/<int:id>', views.editar_material),
     
 ]

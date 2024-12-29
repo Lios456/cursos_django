@@ -9,12 +9,12 @@
             
             <div class="mb-3">
                 <label for="tx_titulo" class="form-label">Título</label>
-                <input type="text" class="form-control" id="tx_titulo" name="tx_titulo" maxlength="100" placeholder="Ingrese el título del recurso" required>
+                <input type="text" class="form-control" id="tx_titulo" name="tx_titulo" maxlength="100" placeholder="Ingrese el título del recurso" {% if m %}value="{{ m.titulo }}"{% endif %}>
             </div>
 
             <div class="mb-3">
                 <label for="tx_descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa el recurso" required></textarea>
+                <textarea class="form-control" id="tx_descripcion" name="tx_descripcion" rows="4" placeholder="Describa el recurso" >{% if m %}{{m.descripcion}}{% endif %}</textarea>
             </div>
 
             <div class="mb-3">
@@ -22,7 +22,7 @@
                 <select class="form-select" id="tx_curso" name="tx_curso" required>
                     <option value="" selected="selected">-- Seleccione un curso --</option>
                     {% for curso in cursos %}
-                        <option value="{{ curso.id }}">{{ curso.nombre }}</option>
+                        <option value="{{ curso.id }}" {% if curso == m.curso %}selected="selected"{% endif %}>{{ curso.nombre }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -34,7 +34,7 @@
 
             <div class="mb-3">
                 <label for="tx_link" class="form-label">Enlace</label>
-                <input type="url" class="form-control" id="tx_link" name="tx_link" placeholder="Ingrese un enlace (opcional)">
+                <input type="url" class="form-control" id="tx_link" name="tx_link" placeholder="Ingrese un enlace (opcional)" {% if m.link %}value="{{ m.link }}"{% endif %}>
             </div>
 
             <div class="mb-3 row justify-content-center">

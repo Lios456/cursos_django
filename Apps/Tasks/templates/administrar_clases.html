@@ -3,7 +3,7 @@
 {% block body %}
 
 <div class="container-sm w-50">
-    <form method="post">
+    <form method="post" id="form_clase" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">
             <label for="tx_nombre" class="form-label">Nombre</label>
@@ -82,5 +82,57 @@
             {% endfor %}
     </table>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $("#form_clase").validate({
+            rules: {
+                tx_nombre: {
+                    required: true,
+                    maxlength: 100,
+                    minlength: 20
+                },
+                tx_descripcion: {
+                    required: true,
+                    minlength: 10
+                },
+                tx_curso: {
+                    required: true
+                },
+                tx_link: {
+                    url: true
+                }
+            },
+            messages: {
+                tx_nombre: {
+                    required: "Por favor ingrese el título de la clase",
+                    maxlength: "El título no puede tener más de 100 caracteres",
+                    minlength: "El título debe tener al menos 20 caracteres"
+                },
+                tx_descripcion: {
+                    required: "Por favor describa el recurso",
+                    minlength: "La descripción debe tener al menos 10 caracteres"
+                },
+                tx_curso: {
+                    required: "Por favor seleccione un curso"
+                },
+                tx_link:{
+                    url: "Por favor ingrese un enlace válido"
+                }
+            },
+            errorElement: "div",
+            errorPlacement: function(error, element) {
+                error.addClass("invalid-feedback");
+                element.closest(".mb-3").append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).addClass("is-valid").removeClass("is-invalid");
+            }
+            });
+    });
+    </script>
 
 {% endblock %}
